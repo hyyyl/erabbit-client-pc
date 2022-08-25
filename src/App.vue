@@ -1,6 +1,7 @@
 <template>
 <div class="content">hell world</div>
 <div class="content">hell world</div>
+  <div>change</div>
 </template>
 
 <style lang="less">
