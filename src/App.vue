@@ -2,10 +2,6 @@
 <div class="content">hell world</div>
 <div class="content">hell world</div>
 
-  <div>this is master branch</div>
-  <div>webstorm test</div>
-  <div>this is test branch change change</div>
-
 </template>
 
 <style lang="less">
