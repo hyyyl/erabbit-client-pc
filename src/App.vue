@@ -1,14 +1,21 @@
 <template>
-<div class="content">hell world</div>
+<router-view></router-view>
 </template>
 
 <style lang="less">
-.content {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #14c145;
-}
 
 </style>
+
+<script>
+import request from '@/utils/request'
+export default {
+  name: 'App',
+  setup () {
+    const fn = () => {
+      request('/home/hot', 'post', { a: 10 })
+    }
+
+    return { fn }
+  }
+}
+</script>
