@@ -6,6 +6,11 @@
         <template v-if="item.children">
           <router-link v-for="sub in item.children" :to="`/category/sub/${sub.id}`" :key="sub.id">{{sub.name}}</router-link>
         </template>
+        <template v-else>
+          <!-- 没数据放骨架 -->
+          <xtx-skeleton width="60px" height="18px" style="margin-right:5px" bg="rgba(255,255,255,0.2)"></xtx-skeleton>
+          <xtx-skeleton width="50px" height="18px" bg="rgba(255,255,255,0.2)"></xtx-skeleton>
+        </template>
       </li>
     </ul>
     <!-- 弹层 -->
@@ -48,6 +53,8 @@ import { findBrand } from '@/api/home'
 
 export default {
   name: 'HomeCategory',
+  components: {},
+
   setup () {
     // 最终数据 = 9个分类(2个子分类) + 1个品牌(响应式数据)
     const brand = reactive({
@@ -200,6 +207,17 @@ export default {
   &:hover {
     .layer {
       display: block;
+    }
+  }
+  .xtx-skeleton {
+    animation: fade 1s linear infinite alternate;
+  }
+  @keyframes fade {
+    from {
+      opacity: 0.2;
+    }
+    to {
+      opacity: 1;
     }
   }
 }
