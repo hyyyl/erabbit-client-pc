@@ -4,26 +4,35 @@
 <!-- 头部组件 -->
   <app-header></app-header>
 <!-- 内容容器 -->
-  <div class="main">
+  <div class="app-body">
     <router-view></router-view>
   </div>
 <!-- 底部组件 -->
-  <footer>底部组件</footer>
+  <app-footer></app-footer>
 </template>
 
 <script>
 import AppNavbar from '@/components/app-navbar'
 import AppHeader from '@/components/app-header'
+import { useStore } from 'vuex'
+import AppFooter from '@/components/app-footer'
 
 export default {
   name: 'Layout',
   components: {
     AppNavbar,
-    AppHeader
+    AppHeader,
+    AppFooter
+  },
+  setup () {
+    const store = useStore()
+    store.dispatch('category/getList')
   }
 }
 </script>
 
 <style scoped lang="less">
-
+.app-body{
+  min-height: 900px;
+}
 </style>

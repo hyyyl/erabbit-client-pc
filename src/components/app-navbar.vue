@@ -29,7 +29,6 @@ export default {
     // 获取用户登录信息才能控制切换导航菜单
     const store = useStore()
     const profile = computed(() => store.state.user.profile)
-    console.log(profile, 'x')
     return { profile }
   }
 }
