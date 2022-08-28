@@ -1,8 +1,8 @@
 <template>
-  <div class="home-hot">
+  <div class="home-hot" ref="target">
     <home-panel title="人气推荐" sub-title="人气爆款 不容错过">
       <transition name="fade">
-        <ul ref="panel" v-if="goods" class="goods-list">
+        <ul v-if="goods" class="goods-list">
           <li v-for="item in goods" :key="item.id">
             <routerLink to="/">
               <img :src="item.picture" alt="">
@@ -18,10 +18,11 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+
 import HomePanel from '@/views/home/components/home-panel'
 import { findHot } from '@/api/home'
 import HomeSkeleton from '@/views/home/components/home-skeleton'
+import { useLazyLoad } from '@/hooks'
 export default {
   name: 'HomeNew',
   components: {
@@ -29,11 +30,8 @@ export default {
     HomeSkeleton
   },
   setup () {
-    const goods = ref(null)
-    findHot().then(data => {
-      goods.value = data.result
-    })
-    return { goods }
+    const { result: goods, target } = useLazyLoad(findHot)
+    return { goods, target }
   }
 }
 </script>

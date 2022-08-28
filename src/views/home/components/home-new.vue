@@ -1,10 +1,10 @@
 <template>
-  <div class="home-new">
-    <home-panel title="新鲜好物" sub-title="新鲜出炉 品质可靠">
+  <div class="home-new" ref="target">
+    <home-panel title="新鲜好物" sub-title="新鲜出炉 品质可靠" >
       <template #right> <xtx-more path="/"></xtx-more> </template>
       <!-- 面板内容 -->
       <transition name="fade">
-        <ul v-if="goods.length" class="goods-list">
+        <ul v-if="goods.length" class="goods-list" >
           <li v-for="item in goods" :key="item.id">
             <routerLink :to="`/product/${item.id}`">
               <img :src="item.picture" alt="">
@@ -21,9 +21,10 @@
 <script>
 
 import HomePanel from '@/views/home/components/home-panel'
-import { ref } from 'vue'
+
 import { findNew } from '@/api/home'
 import HomeSkeleton from '@/views/home/components/home-skeleton'
+import { useLazyLoad } from '@/hooks'
 
 export default {
   name: 'HomeNew',
@@ -32,12 +33,9 @@ export default {
     HomeSkeleton
   },
   setup () {
-    const goods = ref([])
-    findNew().then(data => {
-      goods.value = data.result
-    })
+    const { result: goods, target } = useLazyLoad(findNew)
 
-    return { goods }
+    return { goods, target }
   }
 }
 </script>
