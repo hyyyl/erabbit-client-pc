@@ -1,8 +1,8 @@
 <template>
 <!-- 顶部通栏 -->
-  <app-navbar>顶部通栏</app-navbar>
+  <app-navbar></app-navbar>
 <!-- 头部组件 -->
-  <header>头部组件</header>
+  <app-header></app-header>
 <!-- 内容容器 -->
   <div class="main">
     <router-view></router-view>
@@ -13,11 +13,13 @@
 
 <script>
 import AppNavbar from '@/components/app-navbar'
+import AppHeader from '@/components/app-header'
 
 export default {
   name: 'Layout',
   components: {
-    AppNavbar
+    AppNavbar,
+    AppHeader
   }
 }
 </script>
