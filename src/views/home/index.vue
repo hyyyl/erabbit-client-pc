@@ -1,23 +1,28 @@
 <template>
-  <div class="container">
+
    <!-- 首页入口 -->
     <div class="home-entry">
-    <!-- 左侧分类 -->
-      <home-category></home-category>
-    <!-- 轮播图 -->
+      <div class="container">
+        <!-- 左侧分类 -->
+        <home-category></home-category>
+        <!-- 轮播图 -->
+        <home-banner></home-banner>
+     </div>
     </div>
-
-  </div>
+   <!-- 新鲜好物 -->
+   <!-- 人气推荐 -->
 </template>
 
 <script>
 
 import HomeCategory from '@/views/home/components/home-category'
+import HomeBanner from '@/views/home/components/home-banner'
 
 export default {
   name: 'HomePage',
   components: {
-    HomeCategory
+    HomeCategory,
+    HomeBanner
   }
 
 }
