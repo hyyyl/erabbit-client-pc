@@ -16,6 +16,8 @@
   <home-brand></home-brand>
   <!-- 商品区块 -->
   <home-product></home-product>
+  <!-- 最新专题 -->
+  <home-special></home-special>
 </template>
 
 <script>
@@ -26,6 +28,7 @@ import HomeNew from '@/views/home/components/home-new'
 import HomeHot from '@/views/home/components/home-hot'
 import HomeBrand from '@/views/home/components/home-brand'
 import HomeProduct from '@/views/home/components/home-product'
+import HomeSpecial from '@/views/home/components/home-special'
 
 export default {
   name: 'HomePage',
@@ -35,7 +38,8 @@ export default {
     HomeNew,
     HomeHot,
     HomeBrand,
-    HomeProduct
+    HomeProduct,
+    HomeSpecial
   }
 
 }

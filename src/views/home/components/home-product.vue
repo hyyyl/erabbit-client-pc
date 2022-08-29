@@ -40,9 +40,6 @@ export default {
   },
   setup () {
     const { target, result: products } = useLazyLoad(findProduct)
-    setTimeout(() => {
-      console.log(products.value)
-    }, 2000)
     return { target, products }
   }
 }
