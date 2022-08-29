@@ -12,6 +12,8 @@
   <home-new></home-new>
   <!-- 人气推荐 -->
   <home-hot></home-hot>
+  <!-- 热门品牌 -->
+  <home-brand></home-brand>
 </template>
 
 <script>
@@ -20,6 +22,7 @@ import HomeCategory from '@/views/home/components/home-category'
 import HomeBanner from '@/views/home/components/home-banner'
 import HomeNew from '@/views/home/components/home-new'
 import HomeHot from '@/views/home/components/home-hot'
+import HomeBrand from '@/views/home/components/home-brand'
 
 export default {
   name: 'HomePage',
@@ -27,7 +30,8 @@ export default {
     HomeCategory,
     HomeBanner,
     HomeNew,
-    HomeHot
+    HomeHot,
+    HomeBrand
   }
 
 }

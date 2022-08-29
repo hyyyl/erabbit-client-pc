@@ -2,7 +2,7 @@
   <div class="home-hot" ref="target">
     <home-panel title="人气推荐" sub-title="人气爆款 不容错过">
       <transition name="fade">
-        <ul v-if="goods" class="goods-list">
+        <ul v-if="goods.length" class="goods-list">
           <li v-for="item in goods" :key="item.id">
             <routerLink to="/">
               <img :src="item.picture" alt="">
