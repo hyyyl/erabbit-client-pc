@@ -1,19 +1,16 @@
 // 扩展vue原有功能：全局组件，自定义组件，指令
 
-import XtxSkeleton from '@/components/library/xtx-skeleton'
-import XtxCarousel from '@/components/library/xtx-carousel'
-import XtxMore from '@/components/library/xtx-more'
 import defaultImage from '@/assets/images/200.png'
-import XtxBread from '@/components/library/xtx-bread'
-import XtxBreadItem from '@/components/library/xtx-bread-item'
+
+const importFn = require.context('./', false, /\.vue$/)
+
 export default {
   install (app) {
     // 在app上进行扩展
-    app.component(XtxSkeleton.name, XtxSkeleton)
-    app.component(XtxCarousel.name, XtxCarousel)
-    app.component(XtxMore.name, XtxMore)
-    app.component(XtxBread.name, XtxBread)
-    app.component(XtxBreadItem.name, XtxBreadItem)
+    importFn.keys().forEach(path => {
+      const component = importFn(path).default
+      app.component(component.name, component)
+    })
     // 定义指令
     defDirective(app)
   }
