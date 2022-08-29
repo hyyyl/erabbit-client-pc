@@ -35,9 +35,7 @@ export default {
   },
   setup () {
     const { target, result: specialList } = useLazyLoad(findSpecial)
-    setTimeout(() => {
-      console.log(specialList.value)
-    }, 3000)
+
     return { target, specialList }
   }
 }

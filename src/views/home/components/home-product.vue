@@ -9,7 +9,7 @@
       </template>
       <div class="box">
         <router-link class="cover" to="/">
-          <img :src="product.picture" alt="">
+          <img v-lazyLoad="product.picture" alt="">
           <strong class="label">
             <span>{{`${product.name}馆`}}</span>
             <span class="ellipsis-2">{{product.saleInfo}}</span>

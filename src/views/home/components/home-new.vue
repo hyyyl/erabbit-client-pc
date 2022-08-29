@@ -7,7 +7,7 @@
         <ul v-if="goods.length" class="goods-list" >
           <li v-for="item in goods" :key="item.id">
             <routerLink :to="`/product/${item.id}`">
-              <img :src="item.picture" alt="">
+              <img alt="" v-lazyLoad="item.picture">
               <p class="name ellipsis">{{item.name}}</p>
               <p class="price">&yen;{{item.price}}</p>
             </routerLink>
