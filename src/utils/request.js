@@ -8,6 +8,7 @@ import store from '@/store'
 import router from '@/router'
 export const baseURL = 'http://pcapi-xiaotuxian-front-devtest.itheima.net/'
 // 导出基准地址，可能不是通过axios发送请求
+
 const instance = axios.create({
   // 写一些axios的配置
   baseURL,
@@ -43,8 +44,14 @@ instance.interceptors.response.use(res => res.data, err => {
   return Promise.reject(err)
 })
 
-// 请求工具函数
-export default (url, method, submitData) => {
+/**
+ * 请求工具函数
+ * @param url{String}
+ * @param method{String}
+ * @param submitData{Object}
+ * @returns {Promise}
+ */
+export default (url, method, submitData = {}) => {
   // 负责发请求
   return instance({
     url,

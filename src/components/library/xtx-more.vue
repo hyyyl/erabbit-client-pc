@@ -1,6 +1,6 @@
 <template>
   <routerLink :to="path" class="xtx-more">
-    <span>查看全部</span>
+    <span>查看更多</span>
     <i class="iconfont icon-angle-right"></i>
   </routerLink>
 </template>

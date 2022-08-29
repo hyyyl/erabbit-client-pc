@@ -5,7 +5,6 @@ import { ref } from 'vue'
 
 /**
  * 数据懒加载函数
- * @param target{Object} dom对象
  * @param apiFn{Function} api函数,获取数据
  */
 export const useLazyLoad = (apiFn) => {
@@ -25,6 +24,10 @@ export const useLazyLoad = (apiFn) => {
           result.value = data.result
         })
       }
+    },
+    {
+      // 配置选项
+      threshold: 0
     }
   )
   return { result, target }
