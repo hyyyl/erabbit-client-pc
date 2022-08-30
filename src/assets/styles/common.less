@@ -115,3 +115,22 @@ ul {
     }
   }
 }
+
+// 面包屑文字淡出
+.fade-bread-enter-to,
+.fade-bread-leave-from{
+  opacity: 1;
+  transform: none;
+}
+.fade-bread-enter-active,
+.fade-bread-leave-active{
+  transition: all .5s;
+}
+.fade-bread-enter-from{
+  opacity: 0;
+  transform: translate3d(0,-20px,0);
+}
+.fade-bread-leave-to{
+  opacity: 0;
+  transform: translate3d(0,20px,0);
+}

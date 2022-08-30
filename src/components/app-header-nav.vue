@@ -3,7 +3,7 @@
 <!--    {{$store.state.category.list.length}}-->
     <li class="home"><RouterLink to="/">首页</RouterLink></li>
 <!-- 动态渲染，一级分类和后台约定好 -->
-    <li v-for="item in list" :key="item.id" @mouseenter="show(item.id)" @mouseleave="hide(item.id)">
+    <li v-for="item in list" :key="item.id" @mouseenter="show(item.id)" @mouseleave="hide(item.id)" @click="hide(item.id)">
       <router-link :to="`/category/${item.id}`" >{{ item.name }}</router-link>
       <div class="layer" :class="{open : item.open}">
         <ul>

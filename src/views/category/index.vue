@@ -4,7 +4,9 @@
       <!-- 面包屑 -->
       <xtx-bread>
         <xtx-bread-item to="/">首页</xtx-bread-item>
-        <xtx-bread-item>{{topCategory.name}}</xtx-bread-item>
+        <transition name="fade-bread" mode="out-in">
+          <xtx-bread-item :key="topCategory.id">{{topCategory.name}}</xtx-bread-item>
+        </transition>
       </xtx-bread>
       <!-- 轮播图 -->
       <xtx-carousel :slider="slider" style="height:500px"></xtx-carousel>
@@ -75,6 +77,7 @@ export default {
 }
 </script>
 <style scoped lang="less">
+
 .top-category {
   h3 {
     font-size: 28px;
