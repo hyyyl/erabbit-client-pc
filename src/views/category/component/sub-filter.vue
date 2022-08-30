@@ -38,6 +38,7 @@ export default {
     const route = useRoute()
     watch(() => route.params.id, (newVal) => {
       filterLoading.value = true
+      // 路由改变重新加载数据
       if (newVal && `/category/sub/${newVal}` === route.path) {
         findSubCategoryFilter(route.params.id).then(data => {
           data.result.brands.unshift({ id: null, name: '全部' })
