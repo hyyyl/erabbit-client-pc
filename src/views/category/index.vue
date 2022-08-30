@@ -69,7 +69,8 @@ export default {
     }
 
     watch(() => route.params.id, (newVal) => {
-      newVal && getSubList()
+      // 严谨地判断，在顶级目录下再发请求
+      newVal && `/category/${newVal}` === route.path && getSubList()
     }, { immediate: true })
 
     return { slider, topCategory, subList }
