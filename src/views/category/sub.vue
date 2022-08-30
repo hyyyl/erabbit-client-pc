@@ -5,8 +5,10 @@
       <sub-bread></sub-bread>
     <!-- 筛选区 -->
       <sub-filter></sub-filter>
-    <!-- 面包屑 -->
-      <xtx-checkbox v-model="isCheck">全选{{isCheck}}</xtx-checkbox>
+    <!-- 商品面板(排序+列表) -->
+      <div class="goods-list">
+        <sub-sort></sub-sort>
+      </div>
     <!-- 面包屑 -->
     </div>
   </div>
@@ -15,12 +17,14 @@
 import SubBread from '@/views/category/component/sub-bread'
 import SubFilter from '@/views/category/component/sub-filter'
 import { ref } from 'vue'
+import SubSort from '@/views/category/component/sub-sort'
 
 export default {
   name: 'SubCategory',
   components: {
     SubBread,
-    SubFilter
+    SubFilter,
+    SubSort
   },
   setup () {
     const isCheck = ref(true)
