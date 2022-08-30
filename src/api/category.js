@@ -27,3 +27,12 @@ export const findTopCategory = (id) => {
 export const findSubCategoryFilter = (id) => {
   return request('/category/sub/filter', 'get', { id })
 }
+
+/**
+ * 获取分类下的商品,因为数据不够多，但是为了展现无限加载的效果，就没有严格按照筛选去选择数据
+ * @param params {Object}
+ * @returns {Promise|*}
+ */
+export const findSubCategoryGoods = (params) => {
+  return request('/category/goods/temporary', 'post', params)
+}
