@@ -76,7 +76,6 @@ export default {
     }, { immediate: true })
     // 筛选区改变
     const filterChange = (filterParams) => {
-      console.log('filterChange')
       params = { ...params, ...filterParams }
       finished.value = false
       params.page = 1
@@ -86,7 +85,6 @@ export default {
 
     // 排序区改变
     const sortChange = (sortParams) => {
-      console.log('sortChange')
       params = { ...params, ...sortParams }
       finished.value = false
       params.page = 1
