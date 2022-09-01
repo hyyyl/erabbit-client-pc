@@ -92,9 +92,10 @@ export default {
         address.countyCode = item.code
         address.countyName = item.name
         // 选完最后一个关闭
-        emit('change', address)
         close()
       }
+      // 将数据提交给父组件
+      emit('change', address)
       chooseAddress.value = address.provinceName + ' ' + address.cityName + ' ' + address.countyName
     }
     return { isShow, toggle, target, addressData, isLoading, currentList, changeAddress, chooseAddress }

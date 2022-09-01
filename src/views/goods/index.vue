@@ -15,7 +15,10 @@
           <goods-sales></goods-sales>
         </div>
         <div class="spec">
+          <!-- 配送等内容 -->
           <goods-name :goods="goods"></goods-name>
+          <!-- 商品规格 -->
+          <goods-sku :goods="goods"></goods-sku>
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -45,6 +48,7 @@ import { findGoods } from '@/api/product'
 import GoodsImage from '@/views/goods/components/goods-image'
 import GoodsName from '@/views/goods/components/goods-name'
 import GoodsSales from '@/views/goods/components/goods-sales'
+import GoodsSku from '@/views/goods/components/goods-sku'
 
 export default {
   name: 'XtxGoodsPage',
@@ -52,7 +56,8 @@ export default {
     GoodsRelevant,
     GoodsImage,
     GoodsSales,
-    GoodsName
+    GoodsName,
+    GoodsSku
   },
   setup () {
     const goods = useGoods()
