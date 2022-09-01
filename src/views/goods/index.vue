@@ -9,7 +9,13 @@
         <xtx-bread-item to="/">{{goods.name}}</xtx-bread-item>
       </xtx-bread>
       <!-- 商品信息 -->
-      <div class="goods-info"></div>
+      <!-- 商品信息 -->
+      <div class="goods-info">
+        <div class="media">
+          <goods-image :images="goods.mainPictures"></goods-image>
+        </div>
+        <div class="spec"></div>
+      </div>
       <!-- 商品推荐 -->
       <goods-relevant></goods-relevant>
       <!-- 商品详情 -->
@@ -30,29 +36,30 @@
 <script>
 
 import GoodsRelevant from '@/views/goods/components/goods-relevant'
-import XtxBread from '@/components/library/xtx-bread'
-import XtxBreadItem from '@/components/library/xtx-bread-item'
+
 import { nextTick, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { findGoods } from '@/api/product'
+import GoodsImage from '@/views/goods/components/goods-image'
 
 export default {
   name: 'XtxGoodsPage',
   components: {
-    XtxBreadItem,
-    XtxBread,
-    GoodsRelevant
+    GoodsRelevant,
+    GoodsImage
   },
   setup () {
-    const goods = getGoods()
-    setTimeout(() => {
-      console.log(goods.value)
-    }, 3000)
+    const goods = useGoods()
+
     return { goods }
   }
 }
 
-const getGoods = () => {
+/**
+ * 获取商品的详情信息
+ * @returns {Object}
+ */
+const useGoods = () => {
   // id发生变化，组件不会重新渲染
   const goods = ref(null)
   const route = useRoute()
@@ -76,6 +83,16 @@ const getGoods = () => {
 .goods-info {
   min-height: 600px;
   background: #fff;
+  display: flex;
+  .media {
+    width: 580px;
+    height: 600px;
+    padding: 30px 50px;
+  }
+  .spec {
+    flex: 1;
+    padding: 30px 30px 30px 0;
+  }
 }
 .goods-footer {
   display: flex;
