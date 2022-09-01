@@ -4,14 +4,14 @@
     <div class="large" v-if="isShow" :style="[{backgroundImage:`url(${images[currIndex]})`},bgPosition]"></div>
     <!-- 中图 -->
     <div class="middle" ref="target">
-      <img :src="images[currIndex]" alt="">
+      <img :src="images[previewIndex ?? currIndex]" alt="">
       <!-- 遮罩容器 -->
       <div class="layer" v-if="isShow" :style="layerPosition"></div>
     </div>
     <!-- 小图 -->
     <ul class="small">
-      <li v-for="(img,i) in images" :key="img" :class="{active : i === currIndex}">
-        <img @mouseenter="currIndex = i" :src="img" alt="">
+      <li v-for="(img,i) in images" :key="img" :class="{active : i === currIndex}" @click="currIndex = i">
+        <img @mouseenter="previewIndex = i" @mouseleave="previewIndex = undefined" :src="img" alt="">
       </li>
     </ul>
   </div>
@@ -29,8 +29,9 @@ export default {
   },
   setup () {
     const currIndex = ref(0)
+    const previewIndex = ref(undefined)
     const { target, isShow, layerPosition, bgPosition } = useImagePreview()
-    return { currIndex, target, isShow, layerPosition, bgPosition }
+    return { currIndex, target, isShow, layerPosition, bgPosition, previewIndex }
   }
 }
 /**
@@ -109,8 +110,11 @@ const useImagePreview = () => {
       margin-left: 12px;
       margin-bottom: 15px;
       cursor: pointer;
-      &:hover,&.active {
+      &.active {
         border: 2px solid @xtxColor;
+      }
+      &:hover {
+        border: 2px solid pink;
       }
     }
   }

@@ -9,12 +9,14 @@
         <xtx-bread-item to="/">{{goods.name}}</xtx-bread-item>
       </xtx-bread>
       <!-- 商品信息 -->
-      <!-- 商品信息 -->
       <div class="goods-info">
         <div class="media">
           <goods-image :images="goods.mainPictures"></goods-image>
+          <goods-sales></goods-sales>
         </div>
-        <div class="spec"></div>
+        <div class="spec">
+          <goods-name :goods="goods"></goods-name>
+        </div>
       </div>
       <!-- 商品推荐 -->
       <goods-relevant></goods-relevant>
@@ -41,12 +43,16 @@ import { nextTick, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { findGoods } from '@/api/product'
 import GoodsImage from '@/views/goods/components/goods-image'
+import GoodsName from '@/views/goods/components/goods-name'
+import GoodsSales from '@/views/goods/components/goods-sales'
 
 export default {
   name: 'XtxGoodsPage',
   components: {
     GoodsRelevant,
-    GoodsImage
+    GoodsImage,
+    GoodsSales,
+    GoodsName
   },
   setup () {
     const goods = useGoods()
