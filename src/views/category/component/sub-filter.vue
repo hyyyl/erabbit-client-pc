@@ -4,14 +4,14 @@
     <div class="item">
       <div class="head">品牌：</div>
       <div class="body">
-        <a href="javascript:;" :class="{active : brand.id === filterData.brands.SelectedBrand}" @click="filterData.brands.SelectedBrand = brand.id" v-for="brand in filterData.brands" :key="brand.id">{{ brand.name }}</a>
+        <a href="javascript:;" :class="{active : brand.id === filterData.brands.selectedBrand}" @click="changeBrand(brand.id)" v-for="brand in filterData.brands" :key="brand.id">{{ brand.name }}</a>
       </div>
     </div>
 
     <div class="item" v-for="sp in filterData.saleProperties" :key="sp.id">
       <div class="head">{{ sp.name}}:</div>
       <div class="body">
-        <a href="javascript:;" class="ellipsis" :class="{active : item.id === sp.selectedProperty}" @click="sp.selectedProperty = item.id" v-for="item in sp.properties" :key="item.id">{{ item.name }}</a>
+        <a href="javascript:;" class="ellipsis" :class="{active : item.id === sp.selectedProperty}" @click="changeSaleProperty(sp,item.id)" v-for="item in sp.properties" :key="item.id">{{ item.name }}</a>
       </div>
     </div>
   </div>
@@ -32,7 +32,7 @@ import XtxSkeleton from '@/components/library/xtx-skeleton'
 export default {
   name: 'SubFilter',
   components: { XtxSkeleton },
-  setup () {
+  setup (props, { emit }) {
     const filterData = ref(null)
     const filterLoading = ref(false)
     const route = useRoute()
@@ -42,8 +42,9 @@ export default {
       if (newVal && `/category/sub/${newVal}` === route.path) {
         findSubCategoryFilter(route.params.id).then(data => {
           data.result.brands.unshift({ id: null, name: '全部' })
-          data.result.brands.SelectedBrand = null
+          data.result.brands.selectedBrand = null
           data.result.saleProperties.forEach(item => {
+            // 被筛选中的属性
             item.selectedProperty = null
             item.properties.unshift({ id: null, name: '全部' })
           })
@@ -52,8 +53,36 @@ export default {
         })
       }
     }, { immediate: true })
+    // 获取参数
+    const getFilterParams = () => {
+      const params = {}
+      const attrs = []
+      params.brandId = filterData.value.brands.selectedBrand
+      filterData.value.saleProperties.forEach(item => {
+        const attr = item.properties.find(i => i.id === item.selectedProperty)
+        if (attr && attr.id) {
+          attrs.push({ groupName: item.name, propertyName: attr.name })
+        }
+      })
+      if (attrs.length) params.attrs = attrs
+      return params
+    }
+    // 改变品牌
+    const changeBrand = (id) => {
+      if (filterData.value.brands.selectedBrand !== id) {
+        filterData.value.brands.selectedBrand = id
+        emit('filterChange', getFilterParams())
+      }
+    }
+    // 改变筛选属性
+    const changeSaleProperty = (sp, id) => {
+      if (sp.selectedProperty !== id) {
+        sp.selectedProperty = id
+        emit('filterChange', getFilterParams())
+      }
+    }
 
-    return { filterData, filterLoading }
+    return { filterData, filterLoading, changeBrand, changeSaleProperty }
   }
 }
 </script>

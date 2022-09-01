@@ -4,11 +4,11 @@
     <!-- 面包屑 -->
       <sub-bread></sub-bread>
     <!-- 筛选区 -->
-      <sub-filter></sub-filter>
+      <sub-filter @filterChange="filterChange"></sub-filter>
     <!-- 商品面板(排序+列表) -->
       <div class="goods-list">
         <!-- 排序 -->
-        <sub-sort></sub-sort>
+        <sub-sort @sortChange="sortChange"></sub-sort>
         <!-- 列表 -->
         <ul>
           <li v-for="goods in goodsList" :key="goods.id" >
@@ -41,7 +41,7 @@ export default {
   setup () {
     const route = useRoute()
     // 请求参数
-    const params = {
+    let params = {
       page: 1,
       pageSize: 25
     }
@@ -56,7 +56,6 @@ export default {
       params.categoryId = route.params.id
       findSubCategoryGoods(params).then(({ result }) => {
         loading.value = true
-        console.log(result.items)
         if (result.items.length) {
           goodsList.value.push(...result.items)
           params.page++
@@ -65,18 +64,36 @@ export default {
         }
         loading.value = false
       })
-
-      // 监听，如果二级分类id改变就重新加载数据
-      watch(() => route.params.id, (newVal) => {
-        if (newVal && `/category/sub.${newVal}` === route.path) {
-          finished.value = false
-          params.page = 1
-          // 清空列表，会回到顶部进入可视区然后会自动加载数据
-          goodsList.value = []
-        }
-      }, { immediate: true })
     }
-    return { finished, loading, loadData, goodsList }
+    // 监听，如果二级分类id改变就重新加载数据
+    watch(() => route.params.id, (newVal) => {
+      if (newVal && `/category/sub.${newVal}` === route.path) {
+        finished.value = false
+        params.page = 1
+        // 清空列表，会回到顶部进入可视区然后会自动加载数据
+        goodsList.value = []
+      }
+    }, { immediate: true })
+    // 筛选区改变
+    const filterChange = (filterParams) => {
+      console.log('filterChange')
+      params = { ...params, ...filterParams }
+      finished.value = false
+      params.page = 1
+      // 清空列表，会回到顶部进入可视区然后会自动加载数据
+      goodsList.value = []
+    }
+
+    // 排序区改变
+    const sortChange = (sortParams) => {
+      console.log('sortChange')
+      params = { ...params, ...sortParams }
+      finished.value = false
+      params.page = 1
+      // 清空列表，会回到顶部进入可视区然后会自动加载数据
+      goodsList.value = []
+    }
+    return { finished, loading, loadData, goodsList, filterChange, sortChange }
   }
 }
 </script>

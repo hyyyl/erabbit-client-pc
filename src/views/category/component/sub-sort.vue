@@ -25,7 +25,7 @@ import XtxCheckbox from '@/components/library/xtx-checkbox'
 export default {
   name: 'SubSort',
   components: { XtxCheckbox },
-  setup () {
+  setup (props, { emit }) {
     // 明确交互数据
     const sortParams = reactive({
       inventory: false,
@@ -51,6 +51,7 @@ export default {
         sortParams.sortField = sortField
         sortParams.sortMethod = ''
       }
+      emit('sortChange', sortParams)
     }
     return { sortParams, changeSort }
   }
