@@ -57,7 +57,7 @@ export default {
       if (validSelectedValues.length === props.goods.specs.length) {
         const [skuId] = pathMap[validSelectedValues.join('&&')]
         const sku = props.goods.skus.find(sku => sku.id === skuId)
-        console.log(sku)
+
         emit('change', {
           skuId: sku.id,
           inventory: sku.inventory,

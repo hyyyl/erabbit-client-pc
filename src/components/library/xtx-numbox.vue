@@ -35,7 +35,7 @@ export default {
     const count = useVModel(props, 'modelValue', emit)
     const change = (step) => {
       const newVal = props.modelValue + step
-      console.log(newVal)
+
       if (newVal < props.min || newVal > props.max) return
       count.value = newVal
       emit('change', newVal)
