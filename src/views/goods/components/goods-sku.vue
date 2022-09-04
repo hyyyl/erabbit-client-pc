@@ -4,8 +4,8 @@
       <dt>{{ item.name }}</dt>
       <dd>
         <template v-for="val in item.values" :key="val.name">
-          <img :class="{selected : val.selected,disabled : val.disabled}" @click="changeSpecs(item,val)" v-if="val.picture" :src="val.picture" :title="val.name" alt="">
-          <span v-else :class="{selected : val.selected,disabled : val.disabled}" @click="changeSpecs(item,val)">{{val.name}}</span>
+          <img :class="{selected : val.selected,disabled : val.disabled}" @click="changeSku(item,val)" v-if="val.picture" :src="val.picture" :title="val.name" alt="">
+          <span v-else :class="{selected : val.selected,disabled : val.disabled}" @click="changeSku(item,val)">{{val.name}}</span>
         </template>
       </dd>
     </dl>
@@ -13,6 +13,65 @@
 </template>
 <script>
 import bwPowerSet from '@/vender/power-set'
+
+export default {
+  name: 'GoodsSku',
+  props: {
+    goods: {
+      type: Object,
+      default: () => {}
+    },
+    skuId: {
+      type: String,
+      default: ''
+    }
+  },
+  setup (props, { emit }) {
+    const pathMap = getPathMap(props.goods.skus)
+    // 组件初始化时更新禁用状态
+    updateDisabledStatus(props.goods.specs, pathMap)
+    // 组件初始化时设置初始化选中状态
+    initSelectedStatus(props.goods, props.skuId)
+
+    // 切换sku
+    const changeSku = (item, val) => {
+      // 当按钮禁用的时候，直接退出
+      if (val.disabled) return
+
+      // 如果已经选中，就取消，如果未选中，就选中
+      if (val.selected) {
+        val.selected = !val.selected
+      } else {
+        item.values.forEach(v => { v.selected = false })
+        val.selected = true
+      }
+      // 点击组件时更新按钮禁用状态
+      updateDisabledStatus(props.goods.specs, pathMap)
+      // 将选择的信息通知给父组件 {skuId,price,oldPrice,inventory，specsText}
+      // specsText : '属性1: 值1 属性2: 值2'
+      // 完整信息，提交父组件
+
+      // 非完整信息，提交空对象
+
+      const validSelectedValues = getSelectedArr(props.goods.specs).filter(v => v)
+      if (validSelectedValues.length === props.goods.specs.length) {
+        const [skuId] = pathMap[validSelectedValues.join('&&')]
+        const sku = props.goods.skus.find(sku => sku.id === skuId)
+        console.log(sku)
+        emit('change', {
+          skuId: sku.id,
+          inventory: sku.inventory,
+          oldPrice: sku.oldPrice,
+          price: sku.price,
+          specsText: sku.specs.reduce((pre, cur) => `${pre} ${cur.name}: ${cur.valueName}`, '').trim()
+        })
+      } else {
+        emit('change', {})
+      }
+    }
+    return { changeSku }
+  }
+}
 
 /**
  * 生成路径字典
@@ -78,36 +137,21 @@ const getSelectedArr = (specs) => {
   })
   return list
 }
-export default {
-  name: 'GoodsSku',
-  props: {
-    goods: {
-      type: Object,
-      default: () => {}
-    }
-  },
-  setup (props) {
-    console.log(props.goods)
-    const pathMap = getPathMap(props.goods.skus)
-    // 组件初始化时更新禁用状态
-    updateDisabledStatus(props.goods.specs, pathMap)
 
-    const changeSpecs = (item, val) => {
-      // 当按钮禁用的时候，直接退出
-      if (val.disabled) return
-
-      // 如果已经选中，就取消，如果未选中，就选中
-      if (val.selected) {
-        val.selected = !val.selected
-      } else {
-        item.values.forEach(v => { v.selected = false })
-        val.selected = true
-      }
-      // 点击组件时更新按钮禁用状态
-      updateDisabledStatus(props.goods.specs, pathMap)
-    }
-    return { changeSpecs }
-  }
+/**
+ * sku组件初始化选中状态
+ * @param goods {Object}
+ * @param skuId {String}
+ */
+const initSelectedStatus = (goods, skuId) => {
+  const sku = goods.skus.find(sku => sku.id === skuId)
+  // 找不到sku直接退出
+  if (!sku) return
+  goods.specs.forEach((item, i) => {
+    item.values.forEach(val => {
+      val.selected = val.name === sku.specs[i].valueName
+    })
+  })
 }
 </script>
 <style scoped lang="less">

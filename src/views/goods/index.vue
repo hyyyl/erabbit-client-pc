@@ -17,8 +17,8 @@
         <div class="spec">
           <!-- 配送等内容 -->
           <goods-name :goods="goods"></goods-name>
-          <!-- 商品规格 -->
-          <goods-sku :goods="goods"></goods-sku>
+          <!-- 商品规格(sku组件) -->
+          <goods-sku :goods="goods"  @change="changeSku"></goods-sku>
         </div>
       </div>
       <!-- 商品推荐 -->
@@ -61,8 +61,15 @@ export default {
   },
   setup () {
     const goods = useGoods()
-
-    return { goods }
+    // sku改变时触发
+    const changeSku = (sku) => {
+      if (sku.skuId) {
+        goods.value.price = sku.price
+        goods.value.oldPrice = sku.oldPrice
+        goods.value.inventory = sku.inventory
+      }
+    }
+    return { goods, changeSku }
   }
 }
 
