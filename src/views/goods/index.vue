@@ -30,8 +30,8 @@
       <!-- 商品详情 -->
       <div class="goods-footer">
         <div class="goods-article">
-          <!-- 商品+评价 -->
-          <div class="goods-tabs"></div>
+          <!-- 商品+评价 (动态组件切换)-->
+          <goods-tabs></goods-tabs>
           <!-- 注意事项 -->
           <div class="goods-warn"></div>
         </div>
@@ -53,6 +53,7 @@ import GoodsImage from '@/views/goods/components/goods-image'
 import GoodsName from '@/views/goods/components/goods-name'
 import GoodsSales from '@/views/goods/components/goods-sales'
 import GoodsSku from '@/views/goods/components/goods-sku'
+import GoodsTabs from '@/views/goods/components/goods-tabs'
 
 export default {
   name: 'XtxGoodsPage',
@@ -61,7 +62,8 @@ export default {
     GoodsImage,
     GoodsSales,
     GoodsName,
-    GoodsSku
+    GoodsSku,
+    GoodsTabs
   },
   setup () {
     const goods = useGoods()
