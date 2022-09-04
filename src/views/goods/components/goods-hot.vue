@@ -28,7 +28,6 @@ export default {
     const route = useRoute()
     const title = { 1: '24小时热销榜', 2: '周热销榜', 3: '总热销榜' }
     findHotGoods({ id: route.params.id, type: props.type }).then(data => {
-      console.log(data.result)
       goodsList.value = data.result
     })
     return { goodsList, title }

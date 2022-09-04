@@ -33,7 +33,7 @@
           <!-- 商品+评价 (动态组件切换)-->
           <goods-tabs></goods-tabs>
           <!-- 注意事项 -->
-          <div class="goods-warn"></div>
+          <goods-warn></goods-warn>
         </div>
         <!-- 24热榜+专题推荐 -->
         <div class="goods-aside">
@@ -49,7 +49,7 @@
 
 import GoodsRelevant from '@/views/goods/components/goods-relevant'
 
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, provide, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { findGoods } from '@/api/product'
 import GoodsImage from '@/views/goods/components/goods-image'
@@ -58,6 +58,7 @@ import GoodsSales from '@/views/goods/components/goods-sales'
 import GoodsSku from '@/views/goods/components/goods-sku'
 import GoodsTabs from '@/views/goods/components/goods-tabs'
 import GoodsHot from '@/views/goods/components/goods-hot'
+import GoodsWarn from '@/views/goods/components/goods-warn'
 
 export default {
   name: 'XtxGoodsPage',
@@ -68,7 +69,8 @@ export default {
     GoodsName,
     GoodsSku,
     GoodsTabs,
-    GoodsHot
+    GoodsHot,
+    GoodsWarn
   },
   setup () {
     const goods = useGoods()
@@ -82,6 +84,8 @@ export default {
     }
     // 数量选择初始化为1
     const count = ref(1)
+    // 依赖注入，数据提供给后代使用
+    provide('goods', goods)
     return { goods, changeSku, count }
   }
 }
@@ -137,13 +141,5 @@ const useGoods = () => {
     min-height: 1000px;
   }
 }
-.goods-tabs {
-  min-height: 600px;
-  background: #fff;
-}
-.goods-warn {
-  min-height: 600px;
-  background: #fff;
-  margin-top: 20px;
-}
+
 </style>
