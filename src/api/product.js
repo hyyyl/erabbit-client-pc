@@ -32,3 +32,22 @@ export const findRelevantGoods = ({ id, limit = 16 }) => {
 export const findHotGoods = ({ id, limit = 3, type = 1 }) => {
   return request('/goods/hot', 'get', { id, limit, type })
 }
+
+/**
+ * 获取商品评论信息
+ * @param id {String}
+ * @returns {Promise|*}
+ */
+export const findGoodsCommentInfo = (id) => {
+  return request(`/goods/${id}/evaluate`, 'get')
+}
+
+/**
+ * 获取商品评论列表
+ * @param id {String}
+ * @param params {Object}
+ * @returns {Promise|*}
+ */
+export const findGoodsCommentList = (id, params) => {
+  return request(`/goods/${id}/evaluate/page`, 'get', params)
+}

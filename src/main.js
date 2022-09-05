@@ -9,4 +9,6 @@ import UI from '@/components/library'
 import 'normalize.css'
 import '@/assets/styles/common.less'
 
+// mock.js
+import '@/mock'
 createApp(App).use(store).use(router).use(UI).mount('#app')

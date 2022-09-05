@@ -3,7 +3,7 @@
     <nav>
       <a href="javascript:;" :class="{active : activeName === 'detail'}" @click="activeName = 'detail'">商品详情</a
       >
-      <a href="javascript:;" :class="{active : activeName === 'comment'}" @click="activeName = 'comment'">商品评价<span>(500+)</span></a
+      <a href="javascript:;" :class="{active : activeName === 'comment'}" @click="activeName = 'comment'">商品评价</a
       >
     </nav>
     <!-- 这个位置显示对应的组件 GoodsDetail 或者 GoodsComment -->
