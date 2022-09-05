@@ -12,7 +12,11 @@ Mock.setup({
 Mock.mock(/\/goods\/.+\/evaluate\/page/, 'get', () => {
   // 随机数据逻辑
   const items = []
-  for (let i = 0; i < 15; i++) {
+  const pages = Mock.mock('@integer(1,15)')
+  const page = Math.min(Mock.mock('@integer(1,15)'), pages)
+  const counts = pages * 12 + Mock.mock('@integer(-11,0)')
+  console.log(counts, pages, page)
+  for (let i = 0; i < 12; i++) {
     items.push(Mock.mock({
       id: '@id',
       orderInfo: {
@@ -47,7 +51,7 @@ Mock.mock(/\/goods\/.+\/evaluate\/page/, 'get', () => {
         'https://yanxuan-item.nosdn.127.net/b21860c9559943160253d2aaf557773c.jpg',
         'https://yanxuan-item.nosdn.127.net/c492f8840c8c6028ca09c5479b577798.jpg',
         'https://yanxuan-item.nosdn.127.net/a6a803f49726092da1a67bb9d8bf3a13.png'
-      ],
+      ].sort((a, b) => Math.random() - 0.5),
       officialReply: '@cword(10,30)',
       praiseCount: '@integer(0,1000)',
       createTime: '@date("yyyy-mm-dd h:m:s")'
@@ -56,10 +60,10 @@ Mock.mock(/\/goods\/.+\/evaluate\/page/, 'get', () => {
   return Mock.mock({
     msg: '评论数据mock成功',
     result: {
-      counts: 115,
+      counts,
       pageSize: 12,
-      pages: 10,
-      page: '@integer(1,10)',
+      pages,
+      page,
       items
     }
   })

@@ -22,7 +22,7 @@
     <!-- 评价列表 -->
     <!-- 列表 -->
     <div class="list" v-if="commentList">
-      <div class="item" v-for="item in commentList" :key="item.id ?? item">
+      <div class="item" v-for="item in commentList.items" :key="item.id ?? item">
         <div class="user">
           <img :src="item.member.avatar" alt="">
           <span>{{ formatNickname(item.member.nickname) }}</span>
@@ -43,6 +43,8 @@
         </div>
       </div>
     </div>
+    <!-- 分页组件 -->
+    <xtx-pagination :page="commentList.page" :pages="commentList.pages" @changePage="changePage"></xtx-pagination>
   </div>
 </template>
 <script>
@@ -103,9 +105,14 @@ export default {
     watch(requestParams.value, () => {
       findGoodsCommentList(route.params.id, requestParams).then(data => {
         console.log(data.result)
-        commentList.value = data.result.items
+        commentList.value = data.result
       })
     }, { immediate: true })
+
+    // 实现分页切换
+    const changePage = (newPage) => {
+      requestParams.value.page = newPage
+    }
 
     // 自定义转换数据的函数 对于 vue2 中的过滤器
     const formatSpecs = (specs) => {
@@ -114,7 +121,7 @@ export default {
     const formatNickname = (nickname) => {
       return nickname[0] + '****' + nickname.at(-1)
     }
-    return { commentInfo, isActive, requestParams, changeTag, changeSortField, commentList, formatSpecs, formatNickname }
+    return { commentInfo, isActive, requestParams, changeTag, changeSortField, commentList, formatSpecs, formatNickname, changePage }
   }
 }
 </script>
