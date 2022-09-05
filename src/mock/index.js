@@ -41,16 +41,12 @@ Mock.mock(/\/goods\/.+\/evaluate\/page/, 'get', () => {
       score: '@integer(1,5)',
       tags: ['@cword(2,5)', '@cword(2,5)', '@cword(2,5)'],
       content: '@cword(15,75)',
-      picture: [
-        'http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/avatar_1.png',
-        'http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/avatar_1.png',
-        'http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/avatar_1.png',
-        'http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/avatar_1.png',
-        'http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/avatar_1.png',
-        'http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/avatar_1.png',
-        'http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/avatar_1.png',
-        'http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/avatar_1.png',
-        'http://zhoushugang.gitee.io/erabbit-client-pc-static/uploads/avatar_1.png'
+      pictures: [
+        'https://yanxuan-item.nosdn.127.net/bc7298eb106089530bb6fbcdff81b15e.png',
+        'https://yanxuan-item.nosdn.127.net/6142dcc28dbf0523349f4870e09e526e.jpg',
+        'https://yanxuan-item.nosdn.127.net/b21860c9559943160253d2aaf557773c.jpg',
+        'https://yanxuan-item.nosdn.127.net/c492f8840c8c6028ca09c5479b577798.jpg',
+        'https://yanxuan-item.nosdn.127.net/a6a803f49726092da1a67bb9d8bf3a13.png'
       ],
       officialReply: '@cword(10,30)',
       praiseCount: '@integer(0,1000)',

@@ -34,6 +34,8 @@
             <span class="attr">{{ formatSpecs(item.orderInfo.specs) }}</span>
           </div>
           <div class="text">{{item.content}}</div>
+          <!-- 评论图片组件 -->
+          <goods-comment-image :pictures="item.pictures"></goods-comment-image>
           <div class="time">
             <span>{{item.createTime}}</span>
             <span class="zan"><i class="iconfont icon-dianzan"></i>{{item.praiseCount}}</span>
@@ -47,9 +49,14 @@
 import { useRoute } from 'vue-router'
 import { findGoodsCommentInfo, findGoodsCommentList } from '@/api/product'
 import { ref, watch } from 'vue'
+import GoodsCommentImage from '@/views/goods/components/goods-comment-image'
 
 export default {
   name: 'GoodsComment',
+  components: {
+    GoodsCommentImage
+  },
+
   setup () {
     const route = useRoute()
     const commentInfo = ref({})
