@@ -23,6 +23,16 @@ const routes = [
         component: () => import('@/views/goods/index')
       }
     ]
+  },
+  // 登录路由
+  {
+    path: '/login',
+    component: () => import('@/views/login/index')
+  },
+  // 路由重定向
+  {
+    path: '/:pathMatch(.*)',
+    redirect: '/'
   }
 ]
 
