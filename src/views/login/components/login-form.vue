@@ -8,7 +8,7 @@
         <i class="iconfont icon-msg"></i> 使用短信登录
       </a>
     </div>
-    <Form class="form" :validation-schema="mySchema" autocomplete="off" v-slot="{errors}">
+    <Form ref="target" class="form" :validation-schema="mySchema" autocomplete="off" v-slot="{errors}">
       <template v-if="!isMsgLogin">
         <div class="form-item">
           <div class="input">
@@ -51,7 +51,7 @@
           <a href="javascript:;">《服务条款》</a>
         </div>
       </div>
-      <a href="javascript:;" class="btn">登录</a>
+      <a href="javascript:;" class="btn" @click="login">登录</a>
     </Form>
     <div class="action">
       <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
@@ -63,7 +63,7 @@
   </div>
 </template>
 <script>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { Field, Form } from 'vee-validate'
 import schema from '@/utils/vee-validate-schema'
 export default {
@@ -94,7 +94,23 @@ export default {
     }
 
     // 监听 isMsgLogin，发生改变的时候清空表单且清空上次校验结果
-    return { isMsgLogin, form, mySchema }
+    watch(isMsgLogin, () => {
+      form.value.isAgree = true
+      form.value.account = null
+      form.value.password = null
+      form.value.mobile = null
+      form.value.code = null
+      // 如果没有销毁组件，需要自己清楚校验结果
+    })
+    const target = ref('null')
+    // 需要在点击登录的时候对整体表单进行校验
+    const login = () => {
+      // Form组件提供了一个validate函数作为整体表单校验，返回的是一个Promise
+      target.value.validate().then(msg => {
+        console.log(msg)
+      })
+    }
+    return { isMsgLogin, form, mySchema, login, target }
   }
 }
 </script>
