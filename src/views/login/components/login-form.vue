@@ -8,39 +8,43 @@
         <i class="iconfont icon-msg"></i> 使用短信登录
       </a>
     </div>
-    <div class="form">
+    <Form class="form" :validation-schema="mySchema" autocomplete="off" v-slot="{errors}">
       <template v-if="!isMsgLogin">
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-user"></i>
-            <input type="text" placeholder="请输入用户名" />
+            <Field type="text" name="account" :class="{error : errors.account}" v-model="form.account" placeholder="请输入用户名" />
           </div>
+          <div class="error" v-if="errors.account"><i class="iconfont icon-warning" />{{errors.account}}</div>
         </div>
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-lock"></i>
-            <input type="password" placeholder="请输入密码">
+            <Field type="password" :class="{error : errors.password}" v-model="form.password" name="password" placeholder="请输入密码"/>
           </div>
+          <div class="error" v-if="errors.password"><i class="iconfont icon-warning" />{{errors.password}}</div>
         </div>
       </template>
       <template v-else>
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-user"></i>
-            <input type="text" placeholder="请输入手机号" />
+            <Field type="text" :class="{error : errors.mobile}" v-model="form.mobile" name="mobile" placeholder="请输入手机号" />
           </div>
+          <div class="error" v-if="errors.mobile"><i class="iconfont icon-warning" />{{errors.mobile}}</div>
         </div>
         <div class="form-item">
           <div class="input">
             <i class="iconfont icon-code"></i>
-            <input type="password" placeholder="请输入验证码">
+            <Field type="text" :class="{error : errors.code}" v-model="form.code" name="code" placeholder="请输入验证码"/>
             <span class="code">发送验证码</span>
           </div>
+          <div class="error" v-if="errors.code"><i class="iconfont icon-warning" />{{errors.code}}</div>
         </div>
       </template>
       <div class="form-item">
         <div class="agree">
-          <xtx-checkbox v-model="form.isAgree"></xtx-checkbox>
+          <Field as="xtx-checkbox" v-model="form.isAgree" name="isAgree"></Field>
           <span>我已同意</span>
           <a href="javascript:;">《隐私条款》</a>
           <span>和</span>
@@ -48,7 +52,7 @@
         </div>
       </div>
       <a href="javascript:;" class="btn">登录</a>
-    </div>
+    </Form>
     <div class="action">
       <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
       <div class="url">
@@ -60,16 +64,37 @@
 </template>
 <script>
 import { ref } from 'vue'
+import { Field, Form } from 'vee-validate'
+import schema from '@/utils/vee-validate-schema'
 export default {
   name: 'LoginForm',
+  components: {
+    Form,
+    Field
+  },
   setup () {
     // 是否短信登录
     const isMsgLogin = ref(false)
     // 表单信息对象
     const form = ref({
-      isAgree: true
+      isAgree: true,
+      account: null,
+      password: null,
+      mobile: null,
+      code: null
     })
-    return { isMsgLogin, form }
+    // vee-validate 校验基本步骤
+    // 1. 导入Form Field组件，将form和input进行替换，需要加上name指定校验规则函数
+    // 2. Field需要进行数据绑定,最好与后台接口一致
+    // 3. 定义name属性指定的校验规则函数 Form的validation-schema接收校验规则对象，当表单失去焦点就会进行规则校验
+    // 4. 自定义组件校验需要支持v-model，而且使用as指明组件
+    const mySchema = {
+      // 校验函数规则 : 返回true就是校验成功，否则返回错误提示的字符串
+      ...schema
+    }
+
+    // 监听 isMsgLogin，发生改变的时候清空表单且清空上次校验结果
+    return { isMsgLogin, form, mySchema }
   }
 }
 </script>
