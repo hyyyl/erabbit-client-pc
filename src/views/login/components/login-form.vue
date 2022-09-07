@@ -8,7 +8,7 @@
         <i class="iconfont icon-msg"></i> 使用短信登录
       </a>
     </div>
-    <Form ref="target" class="form" :validation-schema="mySchema" autocomplete="off" v-slot="{errors}">
+    <Form ref="target" class="form" :validation-schema="mySchema" v-slot="{errors}">
       <template v-if="!isMsgLogin">
         <div class="form-item">
           <div class="input">
@@ -67,6 +67,9 @@ import { ref, watch } from 'vue'
 import { Field, Form } from 'vee-validate'
 import schema from '@/utils/vee-validate-schema'
 import message from '@/components/library/message'
+import { userAccountLogin } from '@/api/user'
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 export default {
   name: 'LoginForm',
   components: {
@@ -93,6 +96,9 @@ export default {
       // 校验函数规则 : 返回true就是校验成功，否则返回错误提示的字符串
       ...schema
     }
+    const store = useStore()
+    const route = useRoute()
+    const router = useRouter()
 
     // 监听 isMsgLogin，发生改变的时候清空表单且清空上次校验结果
     watch(isMsgLogin, () => {
@@ -104,13 +110,40 @@ export default {
       // 如果没有销毁组件，需要自己清楚校验结果
     })
     const target = ref('null')
+    let isLogin = true
     // 需要在点击登录的时候对整体表单进行校验
-    const login = () => {
+    const login = async () => {
+      // 防抖
+      if (!isLogin) return
       // Form组件提供了一个validate函数作为整体表单校验，返回的是一个Promise
-      target.value.validate().then(msg => {
-        console.log(msg)
-        message({ type: 'success', text: '拿下offer' })
-      })
+      isLogin = false
+      const valid = await target.value.validate()
+      if (valid) {
+        // 准备一个api做账号登录
+        // 成功跳转到来源页 + 消息提示 + 存储用户信息，失败弹出消息提示
+        const { account, password } = form.value
+        userAccountLogin({ account, password }).then(data => {
+          const { id, avatar, nickname, account, mobile, token } = data.result
+          // 存储用户信息
+          store.commit('user/setUser', { id, avatar, nickname, account, mobile, token })
+          // 消息提示
+          message({ type: 'success', text: '登录成功' })
+          router.push(route.query.redirectUrl ?? '/')
+        }).catch(err => {
+          if (err.response.data) {
+            // 验证不通过，提示用户名或密码错误
+            message({ type: 'error', text: '用户名或密码错误' })
+          } else {
+            // 没有发送出去请求，直接提示登录失败
+            message({ type: 'error', text: '登录失败' })
+          }
+        })
+      } else {
+        message({ type: 'error', text: '用户名或密码不合法' })
+      }
+      setTimeout(() => {
+        isLogin = true
+      }, 1500)
     }
     return { isMsgLogin, form, mySchema, login, target }
   }
