@@ -66,6 +66,7 @@
 import { ref, watch } from 'vue'
 import { Field, Form } from 'vee-validate'
 import schema from '@/utils/vee-validate-schema'
+import message from '@/components/library/message'
 export default {
   name: 'LoginForm',
   components: {
@@ -108,6 +109,7 @@ export default {
       // Form组件提供了一个validate函数作为整体表单校验，返回的是一个Promise
       target.value.validate().then(msg => {
         console.log(msg)
+        message({ type: 'success', text: '拿下offer' })
       })
     }
     return { isMsgLogin, form, mySchema, login, target }
