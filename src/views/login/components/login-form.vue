@@ -8,7 +8,7 @@
         <i class="iconfont icon-msg"></i> 使用短信登录
       </a>
     </div>
-    <Form ref="target" class="form" :validation-schema="mySchema" v-slot="{errors}">
+    <Form ref="target" class="form" :validation-schema="mySchema" v-slot="{errors}" autocomplete="on">
       <template v-if="!isMsgLogin">
         <div class="form-item">
           <div class="input">
@@ -37,7 +37,7 @@
           <div class="input">
             <i class="iconfont icon-code"></i>
             <Field type="text" :class="{error : errors.code}" v-model="form.code" name="code" placeholder="请输入验证码"/>
-            <span class="code">发送验证码</span>
+            <span class="code" @click="getCode" :class="{disabled : time > 0}">发送验证码</span>
           </div>
           <div class="error" v-if="errors.code"><i class="iconfont icon-warning" />{{errors.code}}</div>
         </div>
@@ -63,13 +63,14 @@
   </div>
 </template>
 <script>
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { Field, Form } from 'vee-validate'
 import schema from '@/utils/vee-validate-schema'
 import message from '@/components/library/message'
-import { userAccountLogin } from '@/api/user'
+import { userAccountLogin, userGetMsgCode, userMobileLogin } from '@/api/user'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { useIntervalFn } from '@vueuse/core'
 export default {
   name: 'LoginForm',
   components: {
@@ -99,7 +100,14 @@ export default {
     const store = useStore()
     const route = useRoute()
     const router = useRouter()
-
+    // 计时，发送验证码60秒后才能重新发
+    const time = ref(0)
+    // 三个参数 回调函数 间隔时间 是否立即开启
+    const { pause, resume } = useIntervalFn(() => {
+      time.value--
+      if (time.value === 0) pause()
+    }, 1000, false)
+    onMounted(() => { pause() })
     // 监听 isMsgLogin，发生改变的时候清空表单且清空上次校验结果
     watch(isMsgLogin, () => {
       form.value.isAgree = true
@@ -119,25 +127,53 @@ export default {
       isLogin = false
       const valid = await target.value.validate()
       if (valid) {
-        // 准备一个api做账号登录
-        // 成功跳转到来源页 + 消息提示 + 存储用户信息，失败弹出消息提示
-        const { account, password } = form.value
-        userAccountLogin({ account, password }).then(data => {
-          const { id, avatar, nickname, account, mobile, token } = data.result
-          // 存储用户信息
-          store.commit('user/setUser', { id, avatar, nickname, account, mobile, token })
-          // 消息提示
-          message({ type: 'success', text: '登录成功' })
-          router.push(route.query.redirectUrl ?? '/')
-        }).catch(err => {
-          if (err.response.data) {
-            // 验证不通过，提示用户名或密码错误
-            message({ type: 'error', text: '用户名或密码错误' })
-          } else {
-            // 没有发送出去请求，直接提示登录失败
-            message({ type: 'error', text: '登录失败' })
-          }
-        })
+        if (isMsgLogin.value) {
+          // 使用短信验证码登录
+          // 获取短信验证码 + 验证码登录
+          getCode()
+          const { mobile, code } = form.value
+          userMobileLogin({ mobile, code })
+            .then(data => {
+              const { id, avatar, nickname, account, mobile, token } = data.result
+              // 存储用户信息
+              store.commit('user/setUser', { id, avatar, nickname, account, mobile, token })
+              // 消息提示
+              message({ type: 'success', text: '登录成功' })
+              router.push(route.query.redirectUrl ?? '/')
+            })
+            .catch(err => {
+              if (err.response.data) {
+              // 验证不通过，提示用户名或密码错误
+                message({ type: 'error', text: '手机号或验证码错误' })
+              } else {
+              // 没有发送出去请求，直接提示登录失败
+                message({ type: 'error', text: '登录失败' })
+              }
+            })
+        } else {
+          // 使用账户密码登录
+          // 准备一个api做账号登录
+          // 成功跳转到来源页 + 消息提示 + 存储用户信息，失败弹出消息提示
+          const { account, password } = form.value
+          userAccountLogin({ account, password })
+            .then(data => {
+              const { id, avatar, nickname, account, mobile, token } = data.result
+              // 存储用户信息
+              store.commit('user/setUser', { id, avatar, nickname, account, mobile, token })
+              // 消息提示
+              message({ type: 'success', text: '登录成功' })
+              router.push(route.query.redirectUrl ?? '/')
+            })
+            .catch(err => {
+              if (err.response.data) {
+                // 验证不通过，提示用户名或密码错误
+                message({ type: 'error', text: '用户名或密码错误' })
+              } else {
+                // 没有发送出去请求，直接提示登录失败
+                message({ type: 'error', text: '登录失败' })
+              }
+            })
+        }
       } else {
         message({ type: 'error', text: '用户名或密码不合法' })
       }
@@ -145,7 +181,34 @@ export default {
         isLogin = true
       }, 1500)
     }
-    return { isMsgLogin, form, mySchema, login, target }
+
+    const getCode = () => {
+      if (time.value) {
+        message({ type: 'warn', text: `请在 ${time.value} 秒后发送验证码` })
+        return
+      }
+      // 通过表单校后再去获取验证码
+      const valid = mySchema.mobile(form.value.mobile)
+      console.log(valid)
+      if (valid === true) {
+        // 校验通过
+        time.value = 10
+        resume()
+        // 获取短信验证码
+        const { mobile } = form.value
+        userGetMsgCode({ mobile })
+          .then(data => {
+            message({ type: 'success', text: '发送成功，短信验证码30分钟内有效' })
+          })
+          .catch(err => {
+            if (err.response.data.code === '17001') message({ type: 'error', text: err.response.data.message })
+            else if (err.response.data.code === '17008') message({ type: 'warn', text: err.response.data.message })
+          })
+      } else {
+        target.value.setFieldError('mobile', valid)
+      }
+    }
+    return { isMsgLogin, form, mySchema, login, target, getCode, time }
   }
 }
 </script>
@@ -206,6 +269,9 @@ export default {
           width: 90px;
           height: 34px;
           cursor: pointer;
+          &.disabled {
+            cursor: not-allowed;
+          }
         }
       }
       > .error {

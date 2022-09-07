@@ -4,7 +4,7 @@
       <ul>
         <template v-if="profile.token">
           <li><a href="javascript:;"><i class="iconfont icon-user"></i>{{profile.account}}</a></li>
-          <li><a href="javascript:;">退出登录</a></li>
+          <li><a href="javascript:;" @click="logout">退出登录</a></li>
         </template>
         <template v-else>
           <li> <router-link to="/login">请先登录</router-link> </li>
@@ -22,14 +22,21 @@
 <script>
 import { useStore } from 'vuex'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'AppTopnav',
   setup () {
     // 获取用户登录信息才能控制切换导航菜单
     const store = useStore()
+    const router = useRouter()
     const profile = computed(() => store.state.user.profile)
-    return { profile }
+    // 退出登录,回到登录页
+    const logout = () => {
+      store.commit('user/setUser', {})
+      router.push('/login')
+    }
+    return { profile, logout }
   }
 }
 </script>
