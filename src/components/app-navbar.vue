@@ -7,7 +7,7 @@
           <li><a href="javascript:;" @click="logout">退出登录</a></li>
         </template>
         <template v-else>
-          <li> <router-link to="/login">请先登录</router-link> </li>
+          <li> <router-link to="/login" @click="login">请先登录</router-link> </li>
           <li><a href="javascript:;">免费注册</a></li>
         </template>
         <li><a href="javascript:;">我的订单</a></li>
@@ -22,7 +22,7 @@
 <script>
 import { useStore } from 'vuex'
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 export default {
   name: 'AppTopnav',
@@ -30,13 +30,20 @@ export default {
     // 获取用户登录信息才能控制切换导航菜单
     const store = useStore()
     const router = useRouter()
+    const route = useRoute()
     const profile = computed(() => store.state.user.profile)
+
+    // 登录，设置回跳地址
+    const login = () => {
+      store.commit('user/setRedirectURL', route.path)
+    }
+
     // 退出登录,回到登录页
     const logout = () => {
       store.commit('user/setUser', {})
       router.push('/login')
     }
-    return { profile, logout }
+    return { profile, logout, login }
   }
 }
 </script>

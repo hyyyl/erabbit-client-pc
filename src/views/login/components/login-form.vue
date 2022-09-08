@@ -54,7 +54,10 @@
       <a href="javascript:;" class="btn" @click="login">登录</a>
     </Form>
     <div class="action">
-      <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
+      <a href="https://graph.qq.com/oauth2.0/authorize?client_id=100556005&response_type=token&scope=all&redirect_uri=http%3A%2F%2Fwww.corho.com%3A8080%2F%23%2Flogin%2Fcallback">
+        <img src="https://qzonestyle.gtimg.cn/qzone/vas/opensns/res/img/Connect_logo_7.png" alt="">
+      </a>
+<!--      <span id="qqLoginBtn"></span>-->
       <div class="url">
         <a href="javascript:;">忘记密码</a>
         <a href="javascript:;">免费注册</a>
@@ -68,9 +71,10 @@ import { Field, Form } from 'vee-validate'
 import schema from '@/utils/vee-validate-schema'
 import message from '@/components/library/message'
 import { userAccountLogin, userGetMsgCode, userMobileLogin } from '@/api/user'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { useIntervalFn } from '@vueuse/core'
+// import QC from 'qc'
 export default {
   name: 'LoginForm',
   components: {
@@ -95,10 +99,13 @@ export default {
     // 4. 自定义组件校验需要支持v-model，而且使用as指明组件
     const mySchema = {
       // 校验函数规则 : 返回true就是校验成功，否则返回错误提示的字符串
-      ...schema
+      account: schema.account,
+      password: schema.password,
+      mobile: schema.mobile,
+      code: schema.code,
+      isAgree: schema.isAgree
     }
     const store = useStore()
-    const route = useRoute()
     const router = useRouter()
     // 计时，发送验证码60秒后才能重新发
     const time = ref(0)
@@ -130,7 +137,6 @@ export default {
         if (isMsgLogin.value) {
           // 使用短信验证码登录
           // 获取短信验证码 + 验证码登录
-          getCode()
           const { mobile, code } = form.value
           userMobileLogin({ mobile, code })
             .then(data => {
@@ -139,7 +145,8 @@ export default {
               store.commit('user/setUser', { id, avatar, nickname, account, mobile, token })
               // 消息提示
               message({ type: 'success', text: '登录成功' })
-              router.push(route.query.redirectUrl ?? '/')
+              // 回跳来源页，默认回到首页
+              router.push(store.state.user.redirectURL)
             })
             .catch(err => {
               if (err.response.data) {
@@ -162,7 +169,8 @@ export default {
               store.commit('user/setUser', { id, avatar, nickname, account, mobile, token })
               // 消息提示
               message({ type: 'success', text: '登录成功' })
-              router.push(route.query.redirectUrl ?? '/')
+              // 回跳来源页，默认回到首页
+              router.push(store.state.user.redirectURL)
             })
             .catch(err => {
               if (err.response.data) {
@@ -208,6 +216,13 @@ export default {
         target.value.setFieldError('mobile', valid)
       }
     }
+
+    // 初始化qq登录按钮 (官方)
+    // 1.准备一个有id的span
+    // 2.QC.Login({ btnId: 'qqLoginBtn' })
+    // onMounted(() => {
+    //   QC.Login({ btnId: 'qqLoginBtn' })
+    // })
     return { isMsgLogin, form, mySchema, login, target, getCode, time }
   }
 }
